@@ -35,6 +35,13 @@
             "tests/SchemaTestCase.php"
         ]
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Autn\\Schema\\ServiceProvider"
+            ]
+        }
+    },
     "config": {
         "preferred-install": "dist"
     }
