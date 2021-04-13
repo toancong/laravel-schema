@@ -17,7 +17,17 @@ class DumpSql extends Command
      *
      * @var string
      */
-    protected $signature = 'db:schema {--path= : Path to save file} {--dbconnect= : Name of database} {--force : Run without confirmation } {--method= : Name of method (mysqldump/php) } {--refresh= : Public migration files and refresh migrations (yes/no) } {--type= : Type of file (sql/gzip/bzip2) } {--opts=*}';
+    protected $signature = 'db:schema
+                                {--path= : Path to save file}
+                                {--dbconnect= : Name of database}
+                                {--force : Run without confirmation }
+                                {--method= : Name of method (mysqldump/php) }
+                                {--refresh= : Public migration files and refresh migrations (yes/no) }
+                                {--type= : Type of file (sql/gzip/bzip2) }
+                                {--opts=*}
+                                {--wop|without-publish : Run without publish all vendor }
+                                {--woc|without-cache : Run without cache }
+                            ';
 
     /**
      * The console command description.
@@ -51,6 +61,8 @@ class DumpSql extends Command
         $type = strtolower($this->option('type'));
         $dumpOptions = $this->option('opts');
         $dumpOptions = $dumpOptions ? $dumpOptions : [];
+        $withoutPublish = $this->option('without-publish');
+        $withoutCache = $this->option('without-cache');
         if ($type && !in_array($type, ['sql', 'gzip', 'bzip2'])) {
             $this->error('The type "' . $type . '" does not support');
 
@@ -104,9 +116,13 @@ class DumpSql extends Command
 
         if ($refresh != 'no') {
             if ($force == 'true' || $this->confirm('Your database will refresh! Do you wish to continue?')) {
-                Artisan::call('vendor:publish', ['--all' => true]);
-                Artisan::call('clear-compiled');
-                Artisan::call('optimize');
+                if (!$withoutPublish) {
+                    Artisan::call('vendor:publish', ['--all' => true]);
+                }
+                if (!$withoutCache) {
+                    Artisan::call('clear-compiled');
+                    Artisan::call('optimize');
+                }
                 Artisan::call('migrate:refresh', ['--database' => $dbconnect, '--force' => true]);
             } else {
                 return;
