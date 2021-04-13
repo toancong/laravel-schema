@@ -12,25 +12,8 @@ Update Sep 2020: Now support latest Laravel version
 
 ## 2. Installation
 
-Install via composer - edit your `composer.json` to require the package.
-
-```js
-"require": {
-    // ...
-    "autn/laravel-schema": "*"
-}
-```
-
-Then run `composer update` in your terminal to pull it in.
-Once this has finished, you will need to add the command to the `commands` array in your `app/Console/Kernel.php` config as follows:
-
-```php
-// ....
-protected $commands = [
-    // ...
-    'db:schema' => \Autn\Schema\Console\Commands\DumpSql::class,
-];
-// ...
+```console
+composer require autn/laravel-schema
 ```
 ## 3. Usage
 
